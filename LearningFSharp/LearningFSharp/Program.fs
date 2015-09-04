@@ -2,20 +2,19 @@
 let main argv = 
     printfn "Hello World" 
 
-let add x y =
-    x + y
+let firstHundred = [0..100]
 
 
-let isLessThan100 number = 
-    if number < 100 then
-        printfn "Less than 100"
-    else
-        printfn "Not less than 100"
 
-let answer = add 42 43 |> isLessThan100
+let getEvens x = 
+    x % 2 = 0
 
-let double x =
+let doubleValues x =
     x * 2
 
-let addTwoAndDouble x =
-    double(add x 2)
+
+let sumOfFirstHundredEvensDoubled =
+    [0..100]
+    |> List.filter getEvens
+    |> List.map doubleValues
+    |> List.sum
