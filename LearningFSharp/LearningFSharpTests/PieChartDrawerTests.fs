@@ -25,10 +25,11 @@ module PieChartDrawerTests =
         Assert.AreEqual(resultTitle, "A")
         Assert.AreEqual(resultValue, 1)
 
-    [<Test]
-    let ``When I call ConvertDataRow with "A" I should get a failure exception`` () =
+    [<Test>]
+    let ``When I call ProcessLines with an empty list of strings I should get an []`` () =
         let pieChartDrawer = new PieChartDrawer()
 
-        let (resultTitle, resultValue) = pieChartDrawer.ConvertDataRow("A")
+        let result = pieChartDrawer.ProcessLines([])
 
-        Assert.Fail("bad")
+        Assert.IsTrue(result.IsEmpty)
+        
