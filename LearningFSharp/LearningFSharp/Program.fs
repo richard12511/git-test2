@@ -1,15 +1,40 @@
-﻿open System.Windows.Forms
+﻿namespace LearningFSharp
+
+open System
+open System.IO
 open System.Drawing
+open System.Windows.Forms
 
-type HelloWindow() =
-    let form = new Form(Width = 400, Height = 140)
-    let font = new Font("Times New Roman", 28.0f)
-    let label = new Label(Dock = DockStyle.Fill, Font = font, TextAlign = ContentAlignment.MiddleCenter)
-    do form.Controls.Add(label)
+module Startup =    
 
-    member x.SayHello name =
-        let message = "Hello " + name + "!"
-        label.Text <- message
+    let mainForm = new Form(Width = 620, Height = 450, Text = "Pie Chart")
+    
+    let menu = new ToolStrip();
+    let buttonOpen = new ToolStripButton("Open")
+    let buttonSave = new ToolStripButton("Save", Enabled = false)
+    menu.Items.Add(buttonOpen) |> ignore
+    menu.Items.Add(buttonSave) |> ignore
+    
+    let boxChart = new PictureBox(BackColor = Color.White, Dock = DockStyle.Fill, SizeMode = PictureBoxSizeMode.CenterImage)
+    
+    mainForm.Controls.Add(menu)
+    mainForm.Controls.Add(boxChart);
 
-    member x.Run =
-        Application.Run form
+    let openAndDrawChart (e) =
+        let dialog = new OpenFileDialog(Filter = "CSV Files|*.csv")
+        if(dialog.ShowDialog() = DialogResult.OK) then
+            let pieChartDrawer = new PieChartDrawer()
+            let pieChart = pieChartDrawer.DrawChart(dialog.FileName)
+            boxChart.Image <- pieChart
+            buttonSave.Enabled <- true
+
+    let saveDrawing (e) =
+        let dialog = new SaveFileDialog(Filter="PNG files|*.png")
+        if(dialog.ShowDialog() = DialogResult.OK) then
+            boxChart.Image.Save(dialog.FileName)
+
+    [<STAThread>]
+    do
+        buttonOpen.Click.Add(openAndDrawChart)
+        buttonSave.Click.Add(saveDrawing)
+        Application.Run(mainForm) 
