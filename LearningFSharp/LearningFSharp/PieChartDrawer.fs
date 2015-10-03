@@ -55,9 +55,9 @@ type PieChartDrawer() =
         let rc = new PointF(float32(x) - size.Width/2.0f, float32(y) - size.Height/2.0f) 
         graphics.DrawString(title, font, Brushes.Black, new RectangleF(rc, size))
 
-    member x.DrawStep (drawingFunction, graphics : Graphics, sum, tuples) =
-        let rec drawStepUtil (tuples, angleSoFar) =
-            match tuples with
+    member x.DrawStep (drawingFunction, graphics : Graphics, sum, data) =
+        let rec drawStepUtil (data, angleSoFar) =
+            match data with
             | [] -> ()
             | [title, value] ->
                 let angle = 360 - angleSoFar
@@ -65,8 +65,8 @@ type PieChartDrawer() =
             | (title, value)::tail ->
                 let angle = x.CalculateAngle value sum
                 drawingFunction(graphics, title, angleSoFar, angle)
-                drawStepUtil(tail, angleSoFar)
-        drawStepUtil(tuples, 0)
+                drawStepUtil(tail, angleSoFar + angle)
+        drawStepUtil(data, 0)
 
     member x.DrawChart (file) =
         let lines = List.ofSeq(File.ReadAllLines(file))
